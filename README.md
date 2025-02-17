@@ -1,11 +1,11 @@
 # ETH_GoogleEarthEngine
 
-Workshop Web Spectral Indexes - July 2024 (Venice)
+Spectral Indexes - February 2025 
 
 :globe_with_meridians:
 WEB
+<img width="1459" alt="Screenshot 2025-02-17 at 11 21 38 PM" src="https://github.com/user-attachments/assets/e5107179-824e-417f-ac95-47d0fdabbfa2" />
 
-<img width="1529" alt="Screenshot 2024-07-26 at 12 05 22 AM" src="https://github.com/user-attachments/assets/0bb9f9f2-1520-4df4-a448-47786240741b">
 
 ## Tutorial: Upload and Style Your GeoJSON and GeoTIFF Layers on a Mapbox Map
 
