@@ -1,5 +1,6 @@
 
-![test](https://github.com/user-attachments/assets/5d14cb4d-9ae7-4a86-8721-f85041c7add6)
+
+<img width="1459" alt="Screenshot 2025-02-17 at 11 25 56 PM" src="https://github.com/user-attachments/assets/5d14cb4d-9ae7-4a86-8721-f85041c7add6" />
 
 
 # ETH_GoogleEarthEngine
