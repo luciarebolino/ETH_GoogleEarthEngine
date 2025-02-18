@@ -5,7 +5,7 @@
 
 # ETH_GoogleEarthEngine
 
-Spectral Indexes - February 2025 
+February 2025 
 
 :globe_with_meridians: 🛰️
 REMOTE SENSING
@@ -23,7 +23,7 @@ In the **second part of the workshop**, we will **break down and explain each se
 1. https://code.earthengine.google.co.in/a9932354bfbef1fc31bfdf08cd78124f?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
 
 
-### Step 1: Spectrum and Indexes
+### Step 2: Spectrum and Indexes
 
 - **Light** – When light strikes an object, it can be absorbed, transmitted, or reflected. How this interaction happens and how it depends on the material properties of the surface?  
 - **Bands** – Combining bands - specific segments of the electromagnetic spectrum.
@@ -32,3 +32,19 @@ In the **second part of the workshop**, we will **break down and explain each se
 1. https://code.earthengine.google.co.in/800a6c4028dd2ec775d019b9d101521a?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
    <br>
 2. https://code.earthengine.google.co.in/7c6d6cd9411141a4d8c6fa106b7d123d?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
+
+
+### Step 3: Elevation 
+
+- **Height** – Map the vertical dimension of the Earth's surface.
+
+
+<img width="1459" alt="Screenshot 2025-02-18 at 1 17 38 AM" src="https://github.com/user-attachments/assets/735f6918-6a47-4bc6-aa7f-639a0ed41ac0" />
+
+1. https://code.earthengine.google.com/219e605eec3fb6d1ab816c084f85a237?hideCode=true
+
+
+
+
+💻
+CODING ON GEE
