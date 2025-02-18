@@ -28,7 +28,7 @@ In the **second part of the workshop**, we will **break down and explain each se
 - **Orbits and Frequency** – Exploring how satellites capture imagery at different time intervals and resolutions.
 
 <img width="1459" alt="Screenshot 2025-02-17 at 11 25 56 PM" src="https://github.com/user-attachments/assets/445f0b98-6151-428c-9b43-4c5787520884" />
-1. https://code.earthengine.google.co.in/a9932354bfbef1fc31bfdf08cd78124f?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
+1. https://code.earthengine.google.co.in/62c521d0e0da10492e68f34054ea39b4
 
 
 ### Step 2: Spectrum and Indexes
