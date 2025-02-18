@@ -6,6 +6,14 @@
 # ETH_GoogleEarthEngine
 
 February 2025 
+<br>
+<br>
+During the semester, resources, references, and tutorials will be shared through Are.na, a collaborative platform where everyone can contribute by adding new blocks with cool GEE examples they discover and would like to share and learn.
+
+At a later stage in the course, Are.na will also become a tool for representation, allowing us to structure and present our findings collectively.
+
+To ensure smooth collaboration, please upload your [Are.na and GitHub handles](https://docs.google.com/spreadsheets/d/1kiHMuyLygtd7X5zzA5On-iKi-u4TDt42nBywRIzKa1U/edit?usp=sharing) so that I can add you as editors on both platforms.
+
 
 :globe_with_meridians: 🛰️
 REMOTE SENSING
@@ -43,8 +51,22 @@ In the **second part of the workshop**, we will **break down and explain each se
 
 1. https://code.earthengine.google.com/219e605eec3fb6d1ab816c084f85a237?hideCode=true
 
-
+  <br>
+    <br>
+      <br>
+        <br>
+        
 
 
 💻
 CODING ON GEE
+### PLATFORM
+
+
+
+### SPECTRUM IDEXES
+<img width="1459" alt="Screenshot 2025-02-18 at 1 34 48 AM" src="https://github.com/user-attachments/assets/3d79698a-3d95-478c-a256-c5fad806c621" />
+
+**Resources:**
+- https://courses.spatialthoughts.com/end-to-end-gee.html
+- 
