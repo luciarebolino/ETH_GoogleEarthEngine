@@ -62,6 +62,8 @@ In the **second part of the workshop**, we will **break down and explain each se
 CODING ON GEE
 ### PLATFORM
 
+<img width="1459" alt="Screenshot 2025-02-18 at 2 01 30 AM" src="https://github.com/user-attachments/assets/1736e108-9530-48f6-ae5f-32a578e28f48" />
+
 
 
 ### SPECTRUM IDEXES
