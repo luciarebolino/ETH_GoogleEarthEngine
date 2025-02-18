@@ -28,7 +28,7 @@ In the **second part of the workshop**, we will **break down and explain each se
 - **Orbits and Frequency** – Exploring how satellites capture imagery at different time intervals and resolutions.
 
 <img width="1459" alt="Screenshot 2025-02-17 at 11 25 56 PM" src="https://github.com/user-attachments/assets/445f0b98-6151-428c-9b43-4c5787520884" />
-1. https://code.earthengine.google.co.in/62c521d0e0da10492e68f34054ea39b4
+1. https://code.earthengine.google.co.in/2dfe726ae8bf26f016bacb69706db118?hideCode=true
 
 
 ### Step 2: Spectrum and Indexes
@@ -37,7 +37,7 @@ In the **second part of the workshop**, we will **break down and explain each se
 - **Bands** – Combining bands - specific segments of the electromagnetic spectrum.
 
 <img width="1459" alt="Screenshot 2025-02-18 at 12 50 33 AM" src="https://github.com/user-attachments/assets/bc267961-8586-4f7b-b571-e93e67408faa" />
-1. https://code.earthengine.google.co.in/800a6c4028dd2ec775d019b9d101521a?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
+1. https://code.earthengine.google.co.in/bb2535bca205b0e77576931c5c959295?hideCode=true
    <br>
 2. https://code.earthengine.google.co.in/7c6d6cd9411141a4d8c6fa106b7d123d?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
 
