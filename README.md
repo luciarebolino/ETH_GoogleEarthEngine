@@ -94,9 +94,9 @@ All spectral indices follow a standard. Each item of the list has the following 
 
 'contributor': GitHub user link of the contributor (e.g. "https://github.com/davemlz").
 
-# Select and Download Images GEOTIFF from Sentinel-2
+# Select and Download Images GEOTIFF 
 <img width="1461" alt="Screenshot 2025-02-18 at 5 15 49 AM" src="https://github.com/user-attachments/assets/a5a752f4-f957-4a80-a07a-222ef980fd59" />
-
+https://code.earthengine.google.co.in/0a0a0c9adc2692abe9f6d55732237ad1?hideCode=true
 
 ```javascript
 // Define the region of interest (draw an AOI on the GEE map)
