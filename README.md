@@ -414,7 +414,7 @@ exportTimeLapse('SnowMask', ['SnowMask'], true); // Now correctly converted to R
 # Flood Detection and Impact Assessment Using Sentinel-1 SAR on Google Earth Engine
 <img width="1459" alt="Screenshot 2025-02-18 at 3 56 35 AM" src="https://github.com/user-attachments/assets/a0f2ca19-6b7b-491e-9c9c-d9f5339299d0" />
 
-
+https://code.earthengine.google.co.in/78e37073010f5419e5ae2c66925d6489?hideCode=true
 
 This script analyzes flood events using **Sentinel-1 SAR imagery** on **Google Earth Engine (GEE)**. It computes flood extent by comparing **pre-flood and post-flood SAR backscatter** and applies additional datasets for **damage assessment** (e.g., exposed population, affected cropland, and urban areas).
 
