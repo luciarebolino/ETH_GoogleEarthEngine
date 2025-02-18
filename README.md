@@ -263,7 +263,7 @@ Map.addLayer(monthlyMosaics.first(), visParams, 'First Monthly Mosaic');
 <img width="1461" alt="Screenshot 2025-02-18 at 5 24 21 AM" src="https://github.com/user-attachments/assets/0657f22f-f738-4e80-9d7b-f830b349cf79" />
 [Color Map](https://colorbrewer2.org/#type=diverging&scheme=BrBG&n=3)
 
-
+https://code.earthengine.google.co.in/23d1c5a40864af4273fa0789a5eb77be?hideCode=true
 
 ```javascript
 // Define the region of interest (modify as needed)
