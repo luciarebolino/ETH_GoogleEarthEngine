@@ -174,6 +174,88 @@ function exportImage(image, name) {
 exportImage(selectedImage, 'June_2023_SelectedImage');
 ```
 
+# Timelapse Video of Sentinel-2 (1 month)
+<img width="1461" alt="Screenshot 2025-02-18 at 1 33 55 PM" src="https://github.com/user-attachments/assets/0c9b9b5c-7f8f-4011-a24b-5e2726420a81" />
+
+```javascript
+
+// Define the region of interest (modify as needed)
+var region = geometry;
+
+// Function to create monthly mosaics
+function createMonthlyMosaic(year, month) {
+  var start = ee.Date.fromYMD(year, month, 1);
+  var end = start.advance(1, 'month');
+
+  var s2 = ee.ImageCollection("COPERNICUS/S2")
+    .filterBounds(region)
+    .filterDate(start, end)
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20)) // Filter low cloud cover
+    .map(function(image) {
+      return image.divide(10000) // Scale reflectance values
+        .select(['B4', 'B3', 'B2'], ['Red', 'Green', 'Blue']); // Use RGB bands
+    });
+
+  // Compute median composite
+  var mosaic = s2.median().clip(region);
+
+  // Scale to 8-bit (0-255) and convert to uint8
+  return mosaic.multiply(255 / 0.3).clamp(0, 255).toUint8().set({
+    'month': month,
+    'year': year
+  });
+}
+
+// Generate a list of months
+var years = ee.List.sequence(2020, 2023); // Adjust years as needed
+var months = ee.List.sequence(1, 12);
+
+// Create image collection of monthly mosaics
+var monthlyMosaics = ee.ImageCollection.fromImages(
+  years.map(function(year) {
+    return months.map(function(month) {
+      return createMonthlyMosaic(year, month);
+    });
+  }).flatten()
+);
+
+// Visualization parameters
+var visParams = {
+  min: 0,
+  max: 255,
+  bands: ['Red', 'Green', 'Blue']
+};
+
+// Create a time-lapse GIF
+var videoArgs = {
+  region: region,
+  dimensions: 800,
+  framesPerSecond: 2,
+  min: 0,
+  max: 255,
+  bands: ['Red', 'Green', 'Blue'],
+  format: 'gif'
+};
+
+// Export as a GIF
+Export.video.toDrive({
+  collection: monthlyMosaics,
+  description: 'Sentinel2_Timelapse',
+  folder: 'EarthEngine',
+  fileNamePrefix: 'Sentinel2_Timelapse',
+  dimensions: 800,  // Set higher dimensions for better resolution
+  framesPerSecond: 5,
+  region: region
+});
+
+// Display in GEE
+Map.centerObject(region, 8);
+Map.addLayer(monthlyMosaics.first(), visParams, 'First Monthly Mosaic');
+
+
+
+```
+
 
 
 # Use Indexes on Mosaic Images and export Video
