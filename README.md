@@ -7,23 +7,27 @@
 
 Spectral Indexes - February 2025 
 
-:globe_with_meridians:
-WEB
+:globe_with_meridians: 🛰️
+REMOTE SENSING
 
+The following code snippets are designed as **interactive examples** to be used during the lecture. They will be demonstrated live, and participants will have the opportunity to engage with the code.  
 
+In the **second part of the workshop**, we will **break down and explain each section of the code**
 
-## Tutorial: Upload and Style Your GeoJSON and GeoTIFF Layers on a Mapbox Map
+### Step 1: Satellites
 
-### Step 1: Setup and Basic Map Configuration
+- **Pixels** – Understanding how satellite images are composed of discrete units of information.  
+- **Orbits and Frequency** – Exploring how satellites capture imagery at different time intervals and resolutions.
 
-Start with the provided code, which initializes a Mapbox map and adds a countries outline layer:
 <img width="1459" alt="Screenshot 2025-02-17 at 11 25 56 PM" src="https://github.com/user-attachments/assets/445f0b98-6151-428c-9b43-4c5787520884" />
-<img width="745" alt="Screenshot 2025-02-17 at 11 44 35 PM" src="https://github.com/user-attachments/assets/ee884368-b3e1-45ed-a1a5-1d0629955212" />
+https://code.earthengine.google.co.in/a9932354bfbef1fc31bfdf08cd78124f?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
 
 
-## Tutorial: Upload and Style Your GeoJSON and GeoTIFF Layers on a Mapbox Map
+### Step 1: Spectrum and Indexes
 
-### Step 1: Setup and Basic Map Configuration
+- **Light** – When light strikes an object, it can be absorbed, transmitted, or reflected. How this interaction happens and how it depends on the material properties of the surface?  
+- **Bands** – Combining bands - specific segments of the electromagnetic spectrum.
 
-Start with the provided code, which initializes a Mapbox map and adds a countries outline layer:
-<img width="1459" alt="Screenshot 2025-02-17 at 11 21 38 PM" src="https://github.com/user-attachments/assets/e5107179-824e-417f-ac95-47d0fdabbfa2" />
+<img width="1459" alt="Screenshot 2025-02-18 at 12 50 33 AM" src="https://github.com/user-attachments/assets/bc267961-8586-4f7b-b571-e93e67408faa" />
+https://code.earthengine.google.co.in/800a6c4028dd2ec775d019b9d101521a?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
+https://code.earthengine.google.co.in/7c6d6cd9411141a4d8c6fa106b7d123d?accept_repo=users%2Fujavalgandhi%2FEnd-to-End-Projects&hideCode=true
