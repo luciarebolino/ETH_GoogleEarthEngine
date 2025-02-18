@@ -64,11 +64,16 @@ CODING ON GEE
 
 <img width="1459" alt="Screenshot 2025-02-18 at 2 01 30 AM" src="https://github.com/user-attachments/assets/1736e108-9530-48f6-ae5f-32a578e28f48" />
 
-
+[Google Earth Engine requires all users to sign-up for an account](https://code.earthengine.google.com/register). This account is linked with Google Cloud and users must create a Google Cloud Project to use the service. 
+- On the Product Registration Page, select Register a Noncommercial or Commercial Cloud project.
+- Next, you need to choose How do you want to use Earth Engine?. Choose the Unpaid usage, click Next. Since we are in Academia provider, we have chosen Unpaid usage → Research & Academia.
+- In the next dialog, choose Create a new Google Cloud Project. Select No organization for Organization and enter a Project-ID. This id needs to be unique. A standard practice is to use the project-ID in the form of ee-<yourusername>. Click CONTINUE TO SUMMARY. If you have never used Google Cloud before, an error message will be displayed with a note You must accept the Cloud Terms of Service before a Cloud Project can be created.
+- Choose your Country and review the Google Cloud Platform Terms of Service and the terms of service of any applicable services and APIs. After reviewing, click AGREE AND CONTINUE.
+- You will be presented with a summary in the Confirm your Cloud project information dialog. Review and click CONFIRM.
+- The project will be registered and you will be redirected to the Code Editor. If you are not redirected automatically, visit the Earth Engine Code Editor.
 
 ### SPECTRUM IDEXES
 <img width="1459" alt="Screenshot 2025-02-18 at 1 34 48 AM" src="https://github.com/user-attachments/assets/3d79698a-3d95-478c-a256-c5fad806c621" />
+<img width="1459" alt="Screenshot 2025-02-18 at 3 56 35 AM" src="https://github.com/user-attachments/assets/a0f2ca19-6b7b-491e-9c9c-d9f5339299d0" />
 
-**Resources:**
-- https://courses.spatialthoughts.com/end-to-end-gee.html
-- 
+
