@@ -1,0 +1,91 @@
+
+//Here is the code for the flood event. I tried narrowing it down to only include June, but then the code didn’t work.
+// Define the region of interest (modify as needed)
+var region = geometry;
+
+// Function to create monthly mosaics with NDWI-based water masks
+function createMonthlyMosaic(year, month) {
+  var start = ee.Date.fromYMD(year, month, 1);
+  var end = start.advance(1, 'month');
+
+  var s2 = ee.ImageCollection("COPERNICUS/S2")
+    .filterBounds(region)
+    .filterDate(start, end)
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 85)) // Keep low cloud cover
+    .map(function(image) {
+      var scaled = image.divide(10000);
+      
+      // Compute NDWI (Water Index)
+      var ndwi = scaled.normalizedDifference(['B3', 'B8']).rename('NDWI'); // (Green - NIR) / (Green + NIR)
+      
+      // Mask areas with high NDWI (water regions)
+      var waterMask = ndwi.gte(0.1).selfMask().rename('WaterMask'); 
+
+      return scaled.addBands([ndwi, waterMask])
+        .select(['B4', 'B3', 'B2', 'NDWI', 'WaterMask']);
+    });
+
+  var mosaic = s2.median().clip(region);
+
+  // Scale RGB to 8-bit
+  var rgbMosaic = mosaic.select(['B4', 'B3', 'B2']).multiply(255 / 0.3).clamp(0, 255).toUint8();
+
+  // Scale NDWI to 8-bit
+  var ndwiScaled = mosaic.select('NDWI').add(1).multiply(127.5).clamp(0, 255).toUint8();
+
+  // Convert water mask to 8-bit (0 for non-water, 255 for water)
+  var waterMaskScaled = mosaic.select('WaterMask').multiply(255).toUint8();
+
+  return rgbMosaic.addBands([ndwiScaled, waterMaskScaled]).set({ 'month': month, 'year': year });
+}
+
+// Generate a list of months (March to August)
+var year = 2018;
+var months = ee.List.sequence(1, 12); // March to August
+
+// Create image collection of monthly mosaics
+var monthlyMosaics = ee.ImageCollection.fromImages(
+  months.map(function(month) {
+    return createMonthlyMosaic(year, month);
+  })
+);
+
+// Visualization parameters
+var visParamsRGB = { min: 0, max: 255, bands: ['B4', 'B3', 'B2'] };
+var visParamsNDWI = { min: 0, max: 255, bands: ['NDWI'], palette: ['black', 'blue', 'cyan', 'white'] };
+var visParamsWaterMask = { min: 0, max: 255, bands: ['WaterMask'], palette: ['black', 'cyan'] };
+
+// Display in GEE
+Map.centerObject(region, 8);
+Map.addLayer(monthlyMosaics.first().select(['B4', 'B3', 'B2']), visParamsRGB, 'RGB Mosaic');
+Map.addLayer(monthlyMosaics.first().select(['NDWI']), visParamsNDWI, 'NDWI (Water Detection)');
+Map.addLayer(monthlyMosaics.first().select(['WaterMask']), visParamsWaterMask, 'Water Mask (Flooded Areas)');
+
+// Function to prepare a grayscale mask for video export
+function prepareMaskForVideo(maskCollection, maskName) {
+  return maskCollection.map(function(image) {
+    var mask = image.select(maskName);
+    return ee.Image.cat([mask, mask, mask]).toUint8().rename(['R', 'G', 'B']);
+  });
+}
+
+// Function to export a selected index/mask as a time-lapse video
+function exportTimeLapse(indexName, bands, isMask) {
+  var collectionToExport = isMask ? prepareMaskForVideo(monthlyMosaics, bands[0]) : monthlyMosaics.select(bands);
+
+  Export.video.toDrive({
+    collection: collectionToExport,
+    description: 'Flood_' + indexName + '_2018_Timelapse',
+    folder: 'EarthEngine',
+    fileNamePrefix: 'Flood_' + indexName + '_2018',
+    dimensions: 800,
+    framesPerSecond: 5,
+    region: region
+  });
+}
+
+// // Export time-lapse videos for RGB and NDWI (flood observation)
+// exportTimeLapse('RGB', ['B4', 'B3', 'B2'], false);
+exportTimeLapse('NDWI', ['NDWI'], true);
+// exportTimeLapse('WaterMask', ['WaterMask'], false); // Export water mask as grayscale
+
