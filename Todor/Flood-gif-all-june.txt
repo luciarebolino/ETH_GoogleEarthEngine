@@ -1,0 +1,106 @@
+// Define the region of interest (modify as needed)
+var region = geometry;
+
+// Cloud masking function using Sentinel-2 QA60 band
+function maskClouds(image) {
+  var cloudProb = image.select('QA60').gt(0); // Cloud mask (QA60 > 0 means clouds)
+  return image.updateMask(cloudProb.not()); // Keep only non-cloudy pixels
+}
+
+// Function to compute NDWI and Water Mask
+function computeNDWI(image) {
+  var scaled = image.divide(10000); // Scale Sentinel-2 reflectance values
+
+  // Compute NDWI (Water Index)
+  var ndwi = scaled.normalizedDifference(['B3', 'B8']).rename('NDWI'); 
+  var waterMask = ndwi.gte(0.2).selfMask().rename('WaterMask'); // NDWI ≥ 0.2 = water
+
+  // Create a Cyan Water Mask (Water areas in cyan)
+  var waterMaskCyan = ee.Image.rgb(
+    waterMask.multiply(0),    // R = 0 (No red)
+    waterMask.multiply(255),  // G = 255 (Full green)
+    waterMask.multiply(255)   // B = 255 (Full blue)
+  ).toUint8(); 
+
+  return image.addBands([ndwi, waterMask, waterMaskCyan]);
+}
+
+// -----------------------------
+// GET ALL SENTINEL-2 IMAGES FOR JUNE 2018
+// -----------------------------
+var year = 2018;
+var s2Images = ee.ImageCollection("COPERNICUS/S2")
+  .filterBounds(region)
+  .filterDate(ee.Date.fromYMD(year, 6, 1), ee.Date.fromYMD(year, 6, 30))
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 85)) // Match filtering criteria
+  .map(maskClouds) // Remove clouded pixels
+  .map(computeNDWI); // Compute NDWI and Water Mask
+
+// -----------------------------
+// GENERATE COMPOSITE IMAGES FOR JUNE
+// -----------------------------
+// Group images into composites using a rolling window
+var timeStep = 10; // Number of days per composite (adjustable)
+var startDate = ee.Date.fromYMD(year, 6, 1);
+var endDate = ee.Date.fromYMD(year, 6, 30);
+
+// Function to create composites, only if there are images in the window
+function createComposite(startMillis) {
+  var start = ee.Date(startMillis);  // Convert to ee.Date
+  var end = start.advance(timeStep, 'day');
+  
+  var filtered = s2Images.filterDate(start, end); // Select images within the window
+  
+  var count = filtered.size(); // Count images in the window
+  return ee.Algorithms.If(count.gt(0), filtered.median().set({ 'system:time_start': start.millis() }), null); // Only return if images exist
+}
+
+// Generate list of composites
+var dates = ee.List.sequence(startDate.millis(), endDate.millis(), timeStep * 24 * 60 * 60 * 1000);
+var composites = ee.ImageCollection(dates.map(createComposite).removeAll([null])); // Remove null composites
+
+// Print number of composites
+print("Number of composites generated for June:", composites.size());
+
+// -----------------------------
+// DISPLAY COMPOSITES ON THE MAP
+// -----------------------------
+var visParamsRGB = { min: 0, max: 3000, bands: ['B4', 'B3', 'B2'], gamma: 1.4 };
+var visParamsWaterMask = { min: 0, max: 255, bands: ['WaterMaskCyan'] }; // Water Mask as Cyan
+
+composites.evaluate(function(collection) {
+  collection.features.forEach(function(img) {
+    var image = ee.Image(img.id);
+    var date = ee.Date(image.get('system:time_start')).format('YYYY-MM-dd').getInfo();
+
+    // Add RGB composite to map
+    Map.addLayer(image.select(['B4', 'B3', 'B2']), visParamsRGB, 'RGB Composite ' + date);
+
+    // Add Water Mask Composite to map
+    Map.addLayer(image.select(['WaterMaskCyan']), visParamsWaterMask, 'Water Mask Composite ' + date);
+  });
+});
+
+// -----------------------------
+// EXPORT COMPOSITES AS GIF/VIDEO
+// -----------------------------
+function exportTimeLapse(indexName, bands, isMask) {
+  var collectionToExport = isMask ? composites.map(function(image) {
+    return image.select(bands).visualize({
+      min: 0, max: 1, palette: ['black', '#00FFFF'] // Cyan water mask for consistency
+    });
+  }) : composites.select(bands);
+
+  Export.video.toDrive({
+    collection: collectionToExport,
+    description: 'Flood_' + indexName + '_2018_Timelapse_Cyan',
+    folder: 'EarthEngine',
+    fileNamePrefix: 'Flood_' + indexName + '_2018_Cyan',
+    dimensions: 800,
+    framesPerSecond: 5,
+    region: region
+  });
+}
+
+// Export GIF/Video for composite images
+exportTimeLapse('WaterMask', ['WaterMask'], true);
