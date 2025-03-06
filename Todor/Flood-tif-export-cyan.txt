@@ -1,0 +1,94 @@
+// Define the region of interest (modify as needed)
+var region = geometry;
+
+// Cloud masking function using Sentinel-2 QA60 band
+function maskClouds(image) {
+  var cloudProb = image.select('QA60').gt(0); // Cloud mask (QA60 > 0 means clouds)
+  return image.updateMask(cloudProb.not()); // Keep only non-cloudy pixels
+}
+
+// Function to create monthly mosaics with NDWI-based water masks
+function createMonthlyMosaic(year, month) {
+  var start = ee.Date.fromYMD(year, month, 1);
+  var end = start.advance(1, 'month');
+
+  var s2 = ee.ImageCollection("COPERNICUS/S2")
+    .filterBounds(region)
+    .filterDate(start, end)
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 85)) // Keep images with less than 85% cloud cover
+    .map(maskClouds) // Apply improved cloud masking
+    .map(function(image) {
+      var scaled = image.divide(10000); // Scale Sentinel-2 reflectance values
+      
+      // Compute NDWI (Water Index)
+      var ndwi = scaled.normalizedDifference(['B3', 'B8']).rename('NDWI'); 
+      var waterMask = ndwi.gte(0.2).selfMask().rename('WaterMask'); // NDWI ≥ 0.2 = water
+
+      return scaled.addBands([ndwi, waterMask])
+        .select(['B4', 'B3', 'B2', 'NDWI', 'WaterMask']);
+    });
+
+  var mosaic = s2.max().clip(region); // Use max() to capture peak flood extent
+
+  // -----------------------------
+  // CONVERT WATER MASK TO CYAN
+  // -----------------------------
+  var waterMask = mosaic.select('WaterMask'); // Binary: 0 (non-water), 1 (water)
+
+  var waterMaskCyan = ee.Image.rgb( // Create an RGB image with Cyan water
+    waterMask.multiply(0),    // R = 0 (No red)
+    waterMask.multiply(255),  // G = 255 (Full green)
+    waterMask.multiply(255)   // B = 255 (Full blue)
+  ).toUint8(); 
+
+  return mosaic.addBands(waterMaskCyan).set({ 'month': month, 'year': year });
+}
+
+// Set year and month (Only June)
+var year = 2018;
+var months = ee.List([6]); // Only June
+
+// Create image collection of monthly mosaics
+var monthlyMosaics = ee.ImageCollection.fromImages(
+  months.map(function(month) {
+    return createMonthlyMosaic(year, month);
+  })
+);
+
+// -----------------------------
+// UPDATED VISUALIZATION PARAMETERS
+// -----------------------------
+var visParamsRGB = { min: 0, max: 3000, bands: ['B4', 'B3', 'B2'], gamma: 1.4 };
+var visParamsNDWI = { min: -1, max: 1, bands: ['NDWI'], palette: ['black', 'blue', 'cyan', 'white'] };
+
+// Ensure Water Mask is **CYAN**
+var visParamsWaterMask = {
+  bands: ['WaterMask'],
+  min: 0,
+  max: 1,
+  palette: ['black', '#00FFFF'] // **Black for non-water, Cyan for flooded water**
+};
+
+// Display in GEE
+Map.centerObject(region, 8);
+Map.addLayer(monthlyMosaics.first().select(['B4', 'B3', 'B2']), visParamsRGB, 'RGB Mosaic');
+Map.addLayer(monthlyMosaics.first().select(['NDWI']), visParamsNDWI, 'NDWI (Water Detection)');
+Map.addLayer(monthlyMosaics.first().select(['WaterMask']), visParamsWaterMask, 'Water Mask (Flooded Areas)');
+
+// -----------------------------
+// EXPORT TIFF FILE FOR JUNE WITH CYAN WATER MASK
+// -----------------------------
+Export.image.toDrive({
+  image: monthlyMosaics.first().select(['WaterMask']).visualize({
+    min: 0, max: 1, palette: ['black', '#00FFFF'] // **Ensures water appears cyan in TIFF**
+  }), 
+  description: 'Flood_WaterMask_Cyan_June_2018',
+  folder: 'EarthEngine',
+  fileNamePrefix: 'Flood_WaterMask_Cyan_June_2018',
+  region: region,
+  scale: 10, // Sentinel-2 resolution
+  maxPixels: 1e13,
+  crs: 'EPSG:4326' // Ensure compatibility with GIS software
+});
+
+
