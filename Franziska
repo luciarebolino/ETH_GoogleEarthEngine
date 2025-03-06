@@ -1,0 +1,86 @@
+// Import palette
+var palettes = require('users/gena/packages:palettes');
+
+// Define the area of interest: Swiss Jura region
+var juraRegion = ee.Geometry.Polygon([
+  [[5.0, 48.0], [8.0, 48.0], [8.0, 46.0], [5.0, 46.0], [5.0, 48.0]]
+]);
+
+// Set map to terrain mode for better visualization
+Map.setOptions('TERRAIN');
+
+// Clip layers before adding them to the map
+var clippedAirDensity = air_density.first().clip(juraRegion);
+var clippedWindSpeed = wind_speed.first().clip(juraRegion);
+var clippedPowerDensity = power_density.first().clip(juraRegion);
+var clippedCapacityFactor = capacity_factor.first().clip(juraRegion);
+var clippedRuggednessIndex = ruggedness_index.clip(juraRegion);
+
+// Add clipped layers
+Map.addLayer(clippedAirDensity, {min:0.75, max:1.2, palette:palettes.cmocean.Dense[7]}, 'Air Density');
+Map.addLayer(clippedWindSpeed, {min:2, max:12, palette:palettes.matplotlib.plasma[7]}, 'Wind Speed');
+Map.addLayer(clippedPowerDensity, {min:200, max:1750, palette:palettes.niccoli.linearl[7]}, 'Power Density');
+Map.addLayer(clippedCapacityFactor, {min:0.006, max:0.70, palette:palettes.colorbrewer.Spectral[9]}, 'Capacity Factor');
+Map.addLayer(clippedRuggednessIndex, {min:0, max:0.6, palette:palettes.cmocean.Solar[7]}, 'Ruggedness Index');
+
+// *1️⃣ Load Wind Speed Data from ERA5*
+var era5 = ee.ImageCollection('ECMWF/ERA5/DAILY')
+  .select(['u_component_of_wind_10m', 'v_component_of_wind_10m']) // Select wind components
+  .filterBounds(juraRegion)
+  .filterDate('2020-01-01', '2024-01-01'); // Use last 4 years of data
+
+// Compute wind speed from U and V components
+var windSpeed = era5.map(function(image) {
+  var u10 = image.select('u_component_of_wind_10m');
+  var v10 = image.select('v_component_of_wind_10m');
+  var speed = u10.pow(2).add(v10.pow(2)).sqrt().rename('wind_speed');
+  return image.addBands(speed);
+});
+
+// ✅ Get the first available wind speed image and its ID
+var firstWindImage = windSpeed.first();
+var windSpeedImageID = firstWindImage.id(); // Extract the image ID
+
+// ✅ Print the Wind Speed Image ID to the Console
+print('First Wind Speed Image ID:', windSpeedImageID);
+
+// Compute mean wind speed and clip it
+var meanWindSpeed = windSpeed.select('wind_speed').mean().clip(juraRegion);
+
+// *2️⃣ Compute Wind Acceleration (Wind Tunnels)*
+var windGradient = meanWindSpeed.gradient().pow(2).reduce(ee.Reducer.sum()).sqrt()
+  .rename('wind_tunnel_index')
+  .clip(juraRegion);
+
+// *3️⃣ Add Wind Tunnel Index to the Map*
+Map.addLayer(windGradient, {
+  min: 0,
+  max: 5,
+  palette: ['#30D5C8', '#8A2BE2']
+}, 'Wind Tunnel Index');
+
+// *4️⃣ Center Map on Jura Region*
+Map.centerObject(juraRegion, 7);
+Map.setControlVisibility(true, true, true);
+
+// ✅ Manually select an Image ID from the console (Copy from print output)
+var selectedImageID = '20200101'; 
+
+// Convert the selected ID to an Image object
+var selectedImage = ee.Image('ECMWF/ERA5/DAILY/' + selectedImageID).clip(juraRegion);
+
+// ✅ Function to export an image to Google Drive
+function exportImage(image, name) {
+  Export.image.toDrive({
+    image: image,
+    description: name + '_ECMWF_ERA5',
+    folder: 'EarthEngine',
+    fileNamePrefix: name + '_ECMWF_ERA5',
+    region: juraRegion,
+    scale: 10000, // ERA5 resolution (~10 km per pixel)
+    maxPixels: 1e13
+  });
+}
+
+// Uncomment to export the selected image
+exportImage(selectedImage, 'Selected_ERA5_WindSpeed');
