@@ -43,39 +43,39 @@ var windSpeed = era5.map(function(image) {
   return image.addBands(speed);
 });
 
-// ✅ Get the first available wind speed image and its ID
+// Get the first available wind speed image and its ID
 var firstWindImage = windSpeed.first();
 var windSpeedImageID = firstWindImage.id(); // Extract the image ID
 
-// ✅ Print the Wind Speed Image ID to the Console
+// Print the Wind Speed Image ID to the Console
 print('First Wind Speed Image ID:', windSpeedImageID);
 
 // Compute mean wind speed and clip it
 var meanWindSpeed = windSpeed.select('wind_speed').mean().clip(juraRegion);
 
-// *2️⃣ Compute Wind Acceleration (Wind Tunnels)*
+// Compute Wind Acceleration (Wind Tunnels)*
 var windGradient = meanWindSpeed.gradient().pow(2).reduce(ee.Reducer.sum()).sqrt()
   .rename('wind_tunnel_index')
   .clip(juraRegion);
 
-// *3️⃣ Add Wind Tunnel Index to the Map*
+// Add Wind Tunnel Index to the Map*
 Map.addLayer(windGradient, {
   min: 0,
   max: 5,
   palette: ['#30D5C8', '#8A2BE2']
 }, 'Wind Tunnel Index');
 
-// *4️⃣ Center Map on Jura Region*
+// Center Map on Jura Region*
 Map.centerObject(juraRegion, 7);
 Map.setControlVisibility(true, true, true);
 
-// ✅ Manually select an Image ID from the console (Copy from print output)
+// Manually select an Image ID from the console (Copy from print output)
 var selectedImageID = '20200101'; 
 
 // Convert the selected ID to an Image object
 var selectedImage = ee.Image('ECMWF/ERA5/DAILY/' + selectedImageID).clip(juraRegion);
 
-// ✅ Function to export an image to Google Drive
+// Function to export an image to Google Drive
 function exportImage(image, name) {
   Export.image.toDrive({
     image: image,
