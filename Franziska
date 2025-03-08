@@ -1,3 +1,11 @@
+// Dear Lucia, here the code with the necessary imports!
+
+var air_density = ee.ImageCollection('projects/earthengine-legacy/assets/projects/sat-io/open-datasets/global_wind_atlas/air-density');
+var capacity_factor = ee.ImageCollection('projects/earthengine-legacy/assets/projects/sat-io/open-datasets/global_wind_atlas/capacity-factor');
+var power_density = ee.ImageCollection('projects/earthengine-legacy/assets/projects/sat-io/open-datasets/global_wind_atlas/power-density');
+var rix= ee.Image('projects/earthengine-legacy/assets/projects/sat-io/open-datasets/global_wind_atlas/ruggedness-index');
+var wind_speed= ee.ImageCollection('projects/earthengine-legacy/assets/projects/sat-io/open-datasets/global_wind_atlas/wind-speed');
+
 // Import palette
 var palettes = require('users/gena/packages:palettes');
 
@@ -14,14 +22,12 @@ var clippedAirDensity = air_density.first().clip(juraRegion);
 var clippedWindSpeed = wind_speed.first().clip(juraRegion);
 var clippedPowerDensity = power_density.first().clip(juraRegion);
 var clippedCapacityFactor = capacity_factor.first().clip(juraRegion);
-var clippedRuggednessIndex = ruggedness_index.clip(juraRegion);
 
 // Add clipped layers
 Map.addLayer(clippedAirDensity, {min:0.75, max:1.2, palette:palettes.cmocean.Dense[7]}, 'Air Density');
 Map.addLayer(clippedWindSpeed, {min:2, max:12, palette:palettes.matplotlib.plasma[7]}, 'Wind Speed');
 Map.addLayer(clippedPowerDensity, {min:200, max:1750, palette:palettes.niccoli.linearl[7]}, 'Power Density');
 Map.addLayer(clippedCapacityFactor, {min:0.006, max:0.70, palette:palettes.colorbrewer.Spectral[9]}, 'Capacity Factor');
-Map.addLayer(clippedRuggednessIndex, {min:0, max:0.6, palette:palettes.cmocean.Solar[7]}, 'Ruggedness Index');
 
 // *1️⃣ Load Wind Speed Data from ERA5*
 var era5 = ee.ImageCollection('ECMWF/ERA5/DAILY')
